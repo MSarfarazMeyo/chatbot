@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import env from './config.js';
 import { streamChat } from './llm.js';
+import { listKnowledgeFiles } from './knowledge.js';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.get('/api/health', (_req, res) => {
     model: env.llm.model,
     baseUrl: env.llm.baseUrl,
     hasKey: Boolean(env.llm.apiKey),
+    knowledge: listKnowledgeFiles(),
   });
 });
 

@@ -1,4 +1,5 @@
 import env from './config.js';
+import { buildSystemPrompt } from './knowledge.js';
 
 /**
  * Streams a chat completion from any OpenAI-compatible provider.
@@ -7,7 +8,7 @@ import env from './config.js';
  * human-readable message when the provider rejects the request.
  */
 export async function* streamChat(messages, { signal } = {}) {
-  const { baseUrl, apiKey, model, temperature, maxTokens, systemPrompt } = env.llm;
+  const { baseUrl, apiKey, model, temperature, maxTokens } = env.llm;
 
   if (!apiKey) {
     throw new Error(
@@ -18,7 +19,7 @@ export async function* streamChat(messages, { signal } = {}) {
   const hasSystem = messages.some((message) => message.role === 'system');
   const payloadMessages = hasSystem
     ? messages
-    : [{ role: 'system', content: systemPrompt }, ...messages];
+    : [{ role: 'system', content: buildSystemPrompt() }, ...messages];
 
   const response = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',

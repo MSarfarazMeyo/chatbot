@@ -57,6 +57,41 @@ LLM_MODEL=llama3.2
 LLM_API_KEY=ollama
 ```
 
+## Business knowledge (grounding)
+
+The bot answers from docs in `server/knowledge/*.md` — not the model's memory.
+
+```
+server/knowledge/yasir-broast.md   ← the business facts (sample: menu, deals, policies, FAQ)
+server/src/knowledge.js            ← loads docs + builds the system prompt
+server/src/llm.js                  ← injects that system prompt before your messages
+```
+
+**How the system prompt is assembled** (`knowledge.js` → `buildSystemPrompt()`):
+
+1. Persona from `LLM_SYSTEM_PROMPT`
+2. Role ("customer-support assistant for Yasir Broast")
+3. The knowledge files (`### Source: <file>` labelled)
+4. **Grounding rules** — answer only from the knowledge, say "I don't know"
+   otherwise, never invent prices/items/timings
+
+**Why it matters:** the model only knows what's in the prompt (context).
+Grounding = filling that context with *your* facts so answers are verifiable.
+Without the rules, a model asked about something missing will confidently
+**hallucinate** a plausible-but-false answer.
+
+Verified behaviour:
+
+| Question | Result |
+| --- | --- |
+| "Family Deal kitne ka hai aur delivery free hai?" | Rs. 1,850 + Rs. 150 delivery fee, answered in Roman Urdu (matched user language) |
+| "What is the owner's net worth, and do you sell pizza?" | Refused both — "not in my information" / "not on our menu" |
+
+`GET /api/health` reports the loaded docs: `"knowledge": ["yasir-broast.md"]`.
+
+To give the bot your real business: edit `server/knowledge/yasir-broast.md`,
+or drop more `.md` files into `server/knowledge/` (all are loaded).
+
 ## API
 
 ### `GET /api/health`

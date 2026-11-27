@@ -6,12 +6,16 @@ import Composer from './components/Composer.jsx';
 export default function App() {
   const { messages, status, error, send, stop, reset, dismissError } = useChat();
   const [model, setModel] = useState(null);
+  const [knowledge, setKnowledge] = useState([]);
   const scrollRef = useRef(null);
 
   useEffect(() => {
     fetch('/api/health')
       .then((res) => res.json())
-      .then((data) => setModel(data.ok ? data.model : null))
+      .then((data) => {
+        setModel(data.ok ? data.model : null);
+        setKnowledge(data.knowledge ?? []);
+      })
       .catch(() => setModel(null));
   }, []);
 
@@ -30,7 +34,9 @@ export default function App() {
           <div>
             <h1>Chatbot</h1>
             <p className="brand__sub">
-              {model ? `powered by ${model}` : 'react + express'}
+              {model
+                ? `powered by ${model}${knowledge.length ? ` · grounded on ${knowledge.length} doc${knowledge.length > 1 ? 's' : ''}` : ''}`
+                : 'react + express'}
             </p>
           </div>
         </div>
