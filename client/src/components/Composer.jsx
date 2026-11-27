@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
 const SUGGESTIONS = [
-  'Explain React hooks in 3 sentences',
-  'Write a haiku about the ocean',
-  'Give me a JavaScript debounce snippet',
+  'Family Deal kitne ka hai?',
+  'Do you deliver at 2 AM?',
+  'Student Deal ka time kya hai?',
 ];
 
 export default function Composer({ onSend, streaming, onStop, suggestionsHidden }) {
@@ -52,7 +52,7 @@ export default function Composer({ onSend, streaming, onStop, suggestionsHidden 
           ref={textareaRef}
           rows={1}
           value={value}
-          placeholder="Message the assistant…"
+          placeholder="Yasir Broast se kuch poochein…"
           aria-label="Message"
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {

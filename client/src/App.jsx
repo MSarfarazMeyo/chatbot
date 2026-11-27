@@ -56,8 +56,8 @@ export default function App() {
         {messages.length === 0 ? (
           <div className="empty">
             <div className="empty__icon">✨</div>
-            <h2>Ask me anything</h2>
-            <p>Your message goes to Express, which streams back an LLM reply.</p>
+            <h2>Ask Yasir Broast</h2>
+            <p>Menu, prices, deals, delivery & timings — answered from our knowledge base.</p>
           </div>
         ) : (
           messages.map((message, index) => (
